@@ -20,7 +20,7 @@ if [ -z "$JENKINS_HOME" -o -z "$DEST_FILE" ] ; then
 fi
 
 rm -rf "$ARC_DIR" "$TMP_TAR_NAME"
-for i in config-history fingerprints plugins jobs users secrets shiningpanda nodes userContent workflow-libs;do
+for i in config-history fingerprints plugins jobs users secrets nodes userContent workflow-libs;do
   mkdir -p "$ARC_DIR"/$i
 done
 
@@ -49,10 +49,6 @@ fi
 
 if [ "$(ls -A $JENKINS_HOME/secrets/)" ] ; then
   cp -R "$JENKINS_HOME/secrets/". "$ARC_DIR/secrets"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/shiningpanda/)" ]; then
-  cp -R "$JENKINS_HOME/shiningpanda/". "$ARC_DIR/shiningpanda"
 fi
 
 if [ "$(ls -A $JENKINS_HOME/nodes/)" ] ; then
