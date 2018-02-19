@@ -20,11 +20,21 @@ if [ -z "$JENKINS_HOME" -o -z "$DEST_FILE" ] ; then
 fi
 
 rm -rf "$ARC_DIR" "$TMP_TAR_NAME"
-for i in plugins jobs users secrets nodes;do
+for i in config-history fingerprints plugins jobs users secrets shiningpanda nodes userContent workflow-libs;do
   mkdir -p "$ARC_DIR"/$i
 done
 
 cp "$JENKINS_HOME/"*.xml "$ARC_DIR"
+
+cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"
+
+if [ "$(ls -A $JENKINS_HOME/config-history/)" ]; then
+  cp -R "$JENKINS_HOME/config-history/". "$ARC_DIR/config-history"
+fi
+
+if [ "$(ls -A $JENKINS_HOME/fingerprints/)" ]; then
+  cp -R "$JENKINS_HOME/fingerprints/". "$ARC_DIR/fingerprints"
+fi
 
 cp "$JENKINS_HOME/plugins/"*.[hj]pi "$ARC_DIR/plugins"
 hpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.hpi.pinned | wc -l)
@@ -34,15 +44,27 @@ if [ $hpi_pinned_count -ne 0 -o $jpi_pinned_count -ne 0 ]; then
 fi
 
 if [ "$(ls -A $JENKINS_HOME/users/)" ]; then
-  cp -R "$JENKINS_HOME/users/"* "$ARC_DIR/users"
+  cp -R "$JENKINS_HOME/users/". "$ARC_DIR/users"
 fi
 
 if [ "$(ls -A $JENKINS_HOME/secrets/)" ] ; then
-  cp -R "$JENKINS_HOME/secrets/"* "$ARC_DIR/secrets"
+  cp -R "$JENKINS_HOME/secrets/". "$ARC_DIR/secrets"
+fi
+
+if [ "$(ls -A $JENKINS_HOME/shiningpanda/)" ]; then
+  cp -R "$JENKINS_HOME/shiningpanda/". "$ARC_DIR/shiningpanda"
 fi
 
 if [ "$(ls -A $JENKINS_HOME/nodes/)" ] ; then
-  cp -R "$JENKINS_HOME/nodes/"* "$ARC_DIR/nodes"
+  cp -R "$JENKINS_HOME/nodes/". "$ARC_DIR/nodes"
+fi
+
+if [ "$(ls -A $JENKINS_HOME/userContent/)" ] ; then
+  cp -R "$JENKINS_HOME/userContent/". "$ARC_DIR/userContent"
+fi
+
+if [ "$(ls -A $JENKINS_HOME/workflow-libs/)" ] ; then
+  cp -R "$JENKINS_HOME/workflow-libs/". "$ARC_DIR/workflow-libs"
 fi
 
 function backup_jobs {
@@ -61,11 +83,11 @@ function backup_jobs {
       else
         true
         #echo "Job! $JENKINS_HOME/jobs/$rel_depth/$job_name"
-      fi 
+      fi
     done
     #echo "Done in $(pwd)"
     cd -
-  fi  
+  fi
 }
 
 if [ "$(ls -A $JENKINS_HOME/jobs/)" ] ; then
