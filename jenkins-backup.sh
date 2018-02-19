@@ -87,7 +87,9 @@ function backup_jobs {
 }
 
 if [ "$(ls -A $JENKINS_HOME/jobs/)" ] ; then
-  backup_jobs $JENKINS_HOME/jobs/
+  #backup_jobs $JENKINS_HOME/jobs/
+  # backup job build history as well
+  cp -R "$JENKINS_HOME/jobs/". "$ARC_DIR/jobs"
 fi
 
 cd "$TMP_DIR"
