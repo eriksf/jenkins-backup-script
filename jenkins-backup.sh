@@ -52,11 +52,11 @@ for i in "${BACKUP_DIRS[@]}";do
     fi
 done
 
-cp "$JENKINS_HOME/"*.xml "$ARC_DIR"
+cp "$JENKINS_HOME/"*.xml "$ARC_DIR"/
 
-cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"
+cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"/
 
-cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"
+cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"/
 
 cp "$JENKINS_HOME/plugins/"*.[hj]pi "$ARC_DIR/plugins"
 hpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.hpi.pinned | wc -l)
@@ -109,7 +109,7 @@ if [ "$(ls -A $JENKINS_HOME/jobs/)" ] ; then
 fi
 
 cd "$TMP_DIR"
-tar -czvf "$TMP_TAR_NAME" "$ARC_NAME/"*
+tar -czvf "$TMP_TAR_NAME" "$ARC_NAME/"
 cd -
 mv -f "$TMP_TAR_NAME" "$DEST_FILE"
 rm -rf "$ARC_DIR"
