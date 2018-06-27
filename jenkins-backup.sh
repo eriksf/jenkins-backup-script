@@ -81,7 +81,7 @@ function backup_jobs {
                [ "$(grep -c "com.cloudbees.hudson.plugins.folder.Folder" "$JENKINS_HOME/jobs/$rel_depth/$job_name/config.xml")" -ge 1 ] ; then
                 echo "Folder! $JENKINS_HOME/jobs/$rel_depth/$job_name/jobs"
                 # create folder and copy *.xml config files
-                mkdir -p "$ARC_DIR/jobs/$rel_depth/$job_name/"
+                mkdir -p "$ARC_DIR/jobs/$rel_depth/$job_name/jobs"
                 find "$JENKINS_HOME/jobs/$rel_depth/$job_name/" -maxdepth 1 -name "*.xml" -print0 | xargs -0 -I {} cp {} "$ARC_DIR/jobs/$rel_depth/$job_name/"
                 # since this is a Folder, backup its jobs folder
                 backup_jobs "$JENKINS_HOME/jobs/$rel_depth/$job_name/jobs"
