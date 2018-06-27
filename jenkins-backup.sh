@@ -44,6 +44,7 @@ fi
 readarray -t jobs_config_only < $JOB_CONFIG_ONLY
 
 rm -rf "$ARC_DIR" "$TMP_TAR_NAME"
+mkdir -p "$ARC_DIR"
 for i in "${BACKUP_DIRS[@]}";do
     if [[ $i == "plugins" || $i == "jobs" ]]; then
         mkdir -p "$ARC_DIR"/$i
