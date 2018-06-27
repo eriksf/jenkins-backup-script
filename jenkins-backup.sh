@@ -59,6 +59,10 @@ cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"/
 
 cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"/
 
+cp "$JENKINS_HOME/"identity.key* "$ARC_DIR"/
+
+cp "$JENKINS_HOME/"jenkins.install.* "$ARC_DIR"/
+
 cp "$JENKINS_HOME/plugins/"*.[hj]pi "$ARC_DIR/plugins"
 hpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.hpi.pinned | wc -l)
 jpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.jpi.pinned | wc -l)
