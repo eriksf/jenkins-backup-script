@@ -14,6 +14,26 @@ readonly ARC_NAME="jenkins-backup"
 readonly ARC_DIR="$TMP_DIR/$ARC_NAME"
 readonly TMP_TAR_NAME="$TMP_DIR/archive.tar.gz"
 readonly JOB_CONFIG_ONLY="$CUR_DIR/jobs-config-only.txt"
+declare -a BACKUP_DIRS=(".agave"
+    ".aws"
+    "bin"
+    "config-history"
+    "credentials_cache"
+    ".docker"
+    "fingerprints"
+    "init.groovy.d"
+    ".java"
+    "jobs"
+    "nodes"
+    "plugins"
+    "sd2e-cloud-cli"
+    "secrets"
+    ".ssh"
+    ".subversion"
+    "userContent"
+    "users"
+    "workflow-libs"
+)
 
 if [ -z "$JENKINS_HOME" -o -z "$DEST_FILE" ] ; then
     usage >&2
@@ -24,47 +44,25 @@ fi
 readarray -t jobs_config_only < $JOB_CONFIG_ONLY
 
 rm -rf "$ARC_DIR" "$TMP_TAR_NAME"
-for i in config-history fingerprints plugins jobs users secrets nodes userContent workflow-libs;do
-    mkdir -p "$ARC_DIR"/$i
+for i in "${BACKUP_DIRS[@]}";do
+    if [[ $i == "plugins" || $i == "jobs" ]]; then
+        mkdir -p "$ARC_DIR"/$i
+    else
+        cp -R "$JENKINS_HOME/$i" "$ARC_DIR"/
+    fi
 done
 
 cp "$JENKINS_HOME/"*.xml "$ARC_DIR"
 
 cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"
 
-if [ "$(ls -A $JENKINS_HOME/config-history/)" ]; then
-    cp -R "$JENKINS_HOME/config-history/". "$ARC_DIR/config-history"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/fingerprints/)" ]; then
-    cp -R "$JENKINS_HOME/fingerprints/". "$ARC_DIR/fingerprints"
-fi
+cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"
 
 cp "$JENKINS_HOME/plugins/"*.[hj]pi "$ARC_DIR/plugins"
 hpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.hpi.pinned | wc -l)
 jpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.jpi.pinned | wc -l)
 if [ $hpi_pinned_count -ne 0 -o $jpi_pinned_count -ne 0 ]; then
     cp "$JENKINS_HOME/plugins/"*.[hj]pi.pinned "$ARC_DIR/plugins"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/users/)" ]; then
-    cp -R "$JENKINS_HOME/users/". "$ARC_DIR/users"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/secrets/)" ] ; then
-    cp -R "$JENKINS_HOME/secrets/". "$ARC_DIR/secrets"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/nodes/)" ] ; then
-    cp -R "$JENKINS_HOME/nodes/". "$ARC_DIR/nodes"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/userContent/)" ] ; then
-    cp -R "$JENKINS_HOME/userContent/". "$ARC_DIR/userContent"
-fi
-
-if [ "$(ls -A $JENKINS_HOME/workflow-libs/)" ] ; then
-    cp -R "$JENKINS_HOME/workflow-libs/". "$ARC_DIR/workflow-libs"
 fi
 
 function backup_jobs {
