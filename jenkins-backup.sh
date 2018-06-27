@@ -72,9 +72,10 @@ function backup_jobs {
     local rel_depth=${run_in_path#$JENKINS_HOME/jobs/}
     if [ -d "$run_in_path" ]; then
         cd "$run_in_path"
-        find . -maxdepth 1 -type d | while read job_name ; do
-            [ "$job_name" = "." ] && continue
-            [ "$job_name" = ".." ] && continue
+        find . -maxdepth 1 -type d | while read full_job_name ; do
+            [ "$full_job_name" = "." ] && continue
+            [ "$full_job_name" = ".." ] && continue
+            job_name=${full_job_name##./}
             if [ -d "$JENKINS_HOME/jobs/$rel_depth/$job_name" ] &&
                [ -f "$JENKINS_HOME/jobs/$rel_depth/$job_name/config.xml" ] &&
                [ "$(grep -c "com.cloudbees.hudson.plugins.folder.Folder" "$JENKINS_HOME/jobs/$rel_depth/$job_name/config.xml")" -ge 1 ] ; then
@@ -92,7 +93,7 @@ function backup_jobs {
                     find "$JENKINS_HOME/jobs/$rel_depth/$job_name/" -maxdepth 1 -name "*.xml" -print0 | xargs -0 -I {} cp {} "$ARC_DIR/jobs/$rel_depth/$job_name/"
                 else
                     echo "Copying whole job folder"
-                    cp -R "$JENKINS_HOME/jobs/$rel_depth/$job_name/". "$ARC_DIR/jobs/$rel_depth"
+                    cp -R "$JENKINS_HOME/jobs/$rel_depth/$job_name" "$ARC_DIR/jobs/$rel_depth"
                 fi
                 true
                 echo "Job! $JENKINS_HOME/jobs/$rel_depth/$job_name"
