@@ -49,7 +49,7 @@ for i in "${BACKUP_DIRS[@]}";do
     if [[ $i == "plugins" || $i == "jobs" ]]; then
         mkdir -p "$ARC_DIR"/$i
     else
-        cp -R "$JENKINS_HOME/$i" "$ARC_DIR"/
+        [ -d "$JENKINS_HOME/$i" ] && cp -R "$JENKINS_HOME/$i" "$ARC_DIR"/
     fi
 done
 
@@ -57,11 +57,11 @@ cp "$JENKINS_HOME/"*.xml "$ARC_DIR"/
 
 cp "$JENKINS_HOME/"secret.key* "$ARC_DIR"/
 
-cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"/
+cp "$JENKINS_HOME/".gitconfig "$ARC_DIR"/ || true
 
 cp "$JENKINS_HOME/"identity.key* "$ARC_DIR"/
 
-cp "$JENKINS_HOME/"jenkins.install.* "$ARC_DIR"/
+cp "$JENKINS_HOME/"jenkins.install.* "$ARC_DIR"/ || true
 
 cp "$JENKINS_HOME/plugins/"*.[hj]pi "$ARC_DIR/plugins"
 hpi_pinned_count=$(find $JENKINS_HOME/plugins/ -name *.hpi.pinned | wc -l)
