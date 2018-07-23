@@ -41,7 +41,7 @@ def rotate(key_prefix, key_ext, bucket_name, daily_backups=7, weekly_backups=4, 
 
     logger.debug('Number of backups: {}'.format(len(backups)))
     if len(backups) > daily_backups+1 and backups[daily_backups]['date'] - backups[daily_backups+1]['date'] < timedelta(days=7):
-        key = backups[daily_backups]['key']
+        key = bucket.Object(backups[daily_backups]['key'])
         logger.info("deleting {0}".format(key))
         if not dry_run:
             key.delete()
@@ -49,7 +49,7 @@ def rotate(key_prefix, key_ext, bucket_name, daily_backups=7, weekly_backups=4, 
 
     month_offset = daily_backups + weekly_backups
     if len(backups) > month_offset+1 and backups[month_offset]['date'] - backups[month_offset+1]['date'] < timedelta(days=30):
-        key = backups[month_offset]['key']
+        key = bucket.Object(backups[month_offset]['key'])
         logger.info("deleting {0}".format(key))
         if not dry_run:
             key.delete()
